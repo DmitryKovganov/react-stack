@@ -40,18 +40,23 @@ export const UsersList = () => {
         });
 
     const refreshAction = () => {
+        returnToList();
         (tableRef.current as any)?.refresh();
     };
     
     const navigate = useNavigate();    
     const handleCreateNew = () => {
-        setShowForm(() => true);
+        setShowForm(true);
         navigate("./new");
     }
 
-    const handleCancelNew = () => {
-        setShowForm(() => false);
+    const returnToList = () => {
+        setShowForm(false);
         navigate("./");
+    }
+
+    const handleCancelNew = () => {
+        returnToList();
     }
 
     return (
