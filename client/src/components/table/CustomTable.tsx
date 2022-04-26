@@ -30,7 +30,7 @@ export const CustomTable = forwardRef(function CustomTable(props: any, ref: any)
   const [data, setData] = useState([]);
 
   const requestData = useCallback(() => {
-    props.getData().then((data: any) => setData(data));
+    props.getData().then((data: any) => setData(data.payload));
   }, []);
 
   useEffect(() => {

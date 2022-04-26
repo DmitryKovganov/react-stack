@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { NewUserForm } from './NewUserForm';
 
+import { fetchUsers } from './usersSlice';
+import store from '../../redux/store';
+
 const settings: CustomTableSettings = {
     columns: [
         { title: 'Name'}, 
@@ -18,18 +21,21 @@ const settings: CustomTableSettings = {
     ]
 }
 
+
 export const UsersList = () => {
     const [needShowForm, setShowForm] = useState(false);
     const tableRef = useRef(null);
     
-    const fetchUsers = () =>
-        axios.get('/api/users', )
-        .then((response) => response.data as Record<string, any>[])
-        .catch((error) => {
-            console.error(error);
-            return [];
-        });
-    
+    // const users = useSelector((state: any) => state.entities);
+    // const fetchStatus = useSelector((state: any) => state.status);
+    // const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     if (fetchStatus === 'idle') {
+    //       dispatch(fetchUsers())
+    //     }
+    //   }, [fetchStatus, dispatch])
+
     const createUser = (payload: any) =>
         axios.post('/api/user', payload)
         .then((response) => response.data as Record<string, any>)
@@ -61,7 +67,7 @@ export const UsersList = () => {
 
     return (
         <>
-            <CustomTable ref={tableRef} getData={fetchUsers} settings={{...settings}} />
+            <CustomTable ref={tableRef} getData={() => store.dispatch(fetchUsers())} settings={{...settings}} />
             { 
                 needShowForm ?
                 <NewUserForm onCancel={handleCancelNew} onSubmit={createUser}/> :
