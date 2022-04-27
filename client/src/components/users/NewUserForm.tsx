@@ -1,48 +1,66 @@
-import { Button } from "@mui/material";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Button, TextField } from "@mui/material";
+import { useFormik } from "formik";
+import { useState } from "react";
 import * as yup from 'yup';
 
-const schema = yup.object().shape({
-    name: yup.string().required(),
-    lastName: yup.string().required(),
-    role: yup.string().required(),
+const validationSchema = yup.object({
+    name: yup.string().required('Name is requred'),
+    lastName: yup.string().required('Last name is requred'),
+    role: yup.string().required('Role is requred'),
   });
-
-const validateSchema = (data: any) => {
-    const castData = schema.cast(data);
-    return schema.isValid(castData)
-        .then((valid) => valid)
-        .catch((err: any) => err.errors);
-}
 
 export const NewUserForm = (props: any) => {
     const { onCancel, onSubmit } = props;
     const handleSubmit = (newUser: any) => onSubmit(newUser);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const formik = useFormik({
+        initialValues: { name: '', lastName: '', role: '' },
+        validationSchema: validationSchema,
+        onSubmit: (values) => {
+            setIsSubmitted(true);
+            return handleSubmit(values).then(() => setIsSubmitted(false));
+        }
+      });
 
     return (
         <>
             <div>New User Form</div>
-            <Formik
-                initialValues={{ name: '', lastName: '', role: '' }}
-                validate={values => validateSchema(values)}
-                onSubmit={(values, { setSubmitting }) => {
-                    handleSubmit(values).then(() => setSubmitting(false));
-                }}
-                >
-                {({ isSubmitting }) => (
-                    <Form>
-                        <Field type="text" name="name" />
-                        <ErrorMessage name="name" component="div" />
-                        <Field type="text" name="lastName" />
-                        <ErrorMessage name="lastName" component="div" />
-                        <Field type="text" name="role" />
-                        <ErrorMessage name="role" component="div" />
+            <form onSubmit={formik.handleSubmit}>
+            <TextField
+            fullWidth
+            id="name"
+            name="name"
+            label="Name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            />
+            <TextField
+            fullWidth
+            id="lastName"
+            name="lastName"
+            label="Last Name"
+            value={formik.values.lastName}
+            onChange={formik.handleChange}
+            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+            helperText={formik.touched.lastName && formik.errors.lastName}
+            />
+            <TextField
+            fullWidth
+            id="role"
+            name="role"
+            label="role"
+            value={formik.values.role}
+            onChange={formik.handleChange}
+            error={formik.touched.role && Boolean(formik.errors.role)}
+            helperText={formik.touched.role && formik.errors.role}
+            />
 
-                        <Button onClick={onCancel} disabled={isSubmitting} variant="contained" color="warning">Cancel</Button>
-                        <Button type="submit" variant="contained" color="success">Save</Button>
-                    </Form>
-                )}
-            </Formik>
+            <Button onClick={onCancel} disabled={isSubmitted} variant="contained" color="warning">Cancel</Button>
+            <Button type="submit" variant="contained" color="success">Save</Button>
+        </form>
         </>
     )
 }
