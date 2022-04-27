@@ -27,6 +27,9 @@ export const UsersList = () => {
     const tableRef = useRef(null);
     
     const users = useSelector((state: any) => state.users.entities);
+    console.log(users);
+
+    const getData = () => store.dispatch(fetchUsers());
 
     const createUser = (user: any) => store.dispatch(saveNewUser(user))
         .then(refreshAction);
@@ -53,7 +56,7 @@ export const UsersList = () => {
 
     return (
         <>
-            <CustomTable ref={tableRef} getData={() => store.dispatch(fetchUsers())} settings={{...settings}} />
+            <CustomTable ref={tableRef} getData={getData} settings={{...settings}} />
             { 
                 needShowForm ?
                 <NewUserForm onCancel={handleCancelNew} onSubmit={createUser}/> :
