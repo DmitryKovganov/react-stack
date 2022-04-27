@@ -16,10 +16,10 @@ import axios from 'axios';
     return response.data;
   });
   
-  // export const saveNewuser = createAsyncThunk('users/saveNewuser', async data => {
-  //   const response = await axios.post('/api/user', data)
-  //   return response.data;
-  // });
+  export const saveNewUser = createAsyncThunk('users/saveNewuser', async (user: any) => {
+    const response = await axios.post('/api/user', user)
+    return response.data;
+  });
   
   const usersSlice = createSlice({
     name: 'users',
@@ -33,10 +33,9 @@ import axios from 'axios';
         })
         .addCase(fetchUsers.fulfilled, (state, action) => {
           usersAdapter.setAll(state, action.payload);
-          //state.entities = action.payload;
           state.status = 'idle';
         })
-        //.addCase(saveNewuser.fulfilled, usersAdapter.addOne);
+        .addCase(saveNewUser.fulfilled, usersAdapter.addOne);
     }
   });
 

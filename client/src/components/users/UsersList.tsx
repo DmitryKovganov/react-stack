@@ -1,12 +1,12 @@
 import { CustomTable, CustomTableSettings } from '../table/CustomTable';
-import axios from 'axios';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { NewUserForm } from './NewUserForm';
 
-import { fetchUsers } from './usersSlice';
+import { fetchUsers, saveNewUser } from './usersSlice';
 import store from '../../redux/store';
+import { useSelector } from 'react-redux';
 
 const settings: CustomTableSettings = {
     columns: [
@@ -26,24 +26,10 @@ export const UsersList = () => {
     const [needShowForm, setShowForm] = useState(false);
     const tableRef = useRef(null);
     
-    // const users = useSelector((state: any) => state.entities);
-    // const fetchStatus = useSelector((state: any) => state.status);
-    // const dispatch = useDispatch();
+    const users = useSelector((state: any) => state.users.entities);
 
-    // useEffect(() => {
-    //     if (fetchStatus === 'idle') {
-    //       dispatch(fetchUsers())
-    //     }
-    //   }, [fetchStatus, dispatch])
-
-    const createUser = (payload: any) =>
-        axios.post('/api/user', payload)
-        .then((response) => response.data as Record<string, any>)
-        .then(refreshAction)
-        .catch((error) => {
-            console.error(error);
-            return [];
-        });
+    const createUser = (user: any) => store.dispatch(saveNewUser(user))
+        .then(refreshAction);
 
     const refreshAction = () => {
         returnToList();
